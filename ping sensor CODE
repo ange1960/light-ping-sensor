@@ -1,0 +1,42 @@
+long duration, cm;
+const int trigpin = 11;
+const int echopin = 12;
+int lastcm = 500;
+
+void setup() {
+  pinMode(trigpin, OUTPUT);
+  pinMode(echopin, INPUT);
+  Serial.begin(9600);
+
+  for (int x = 2; x < 9; x = x + 1) {
+    pinMode (x, OUTPUT);
+  }
+}
+void loop() {
+  digitalWrite(trigpin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigpin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(trigpin, LOW);
+  duration = pulseIn(echopin, HIGH);
+  cm = duration / 29 / 2;
+  
+delay (100);
+  if (cm > lastcm * 5) {
+    cm = lastcm + 5;
+  }
+  int y = 75;
+  for (int x = 2; x < 9; x++) {
+    if (cm < y) {
+      digitalWrite(x, HIGH);
+    }
+    else {
+        digitalWrite (x, LOW);
+    }
+    y = y + 75;
+  }
+  Serial.print(cm);
+  Serial.println("cm");
+  delay(100);
+  lastcm = cm;
+}
